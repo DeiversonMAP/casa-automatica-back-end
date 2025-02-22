@@ -1,150 +1,660 @@
 {
-  "info": {
-    "name": "Casa Automática API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "Login",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/auth/login",
-            "body": {
-              "mode": "json",
-              "json": {
-                "email": "user@example.com",
-                "senha": "senha123"
-              }
+    "openapi": "3.1.0",
+    "info": { "title": "FastAPI", "version": "0.1.0" },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "tags": ["Autenticação"],
+                "summary": "Login",
+                "operationId": "login_auth_login_post",
+                "requestBody": {
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/LoginRequest" } } },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/TokenResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
             }
-          }
         },
-        {
-          "name": "Obter usuário logado",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/auth/me"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Usuários",
-      "item": [
-        {
-          "name": "Criar usuário",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/user/",
-            "body": {
-              "mode": "json",
-              "json": {
-                "nome": "Novo Usuário",
-                "email": "novo@email.com",
-                "senha": "senhaSegura"
-              }
+        "/auth/me": {
+            "get": {
+                "tags": ["Autenticação"],
+                "summary": "Obter Usuario Autenticado",
+                "operationId": "obter_usuario_autenticado_auth_me_get",
+                "responses": {
+                    "200": { "description": "Successful Response", "content": { "application/json": { "schema": {} } } }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
             }
-          }
         },
-        {
-          "name": "Listar todos os usuários",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/user/"
-          }
-        },
-        {
-          "name": "Obter usuário por e-mail",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/user/email?email=usuario@email.com"
-          }
-        },
-        {
-          "name": "Obter usuário logado (/user/me)",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/user/me"
-          }
-        },
-        {
-          "name": "Deletar usuário",
-          "request": {
-            "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/user/{id}"
-          }
-        }
-      ]
-    },
-    {
-      "name": "Dispositivos",
-      "item": [
-        {
-          "name": "Criar dispositivo",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/device/",
-            "body": {
-              "mode": "json",
-              "json": {
-                "nome": "Lâmpada Inteligente",
-                "usuario_id": 1
-              }
+        "/user/": {
+            "get": {
+                "tags": ["Usuários"],
+                "summary": "Listar Usuarios",
+                "operationId": "listar_usuarios_user__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": { "$ref": "#/components/schemas/UsuarioResponse" },
+                                    "type": "array",
+                                    "title": "Response Listar Usuarios User  Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            },
+            "post": {
+                "tags": ["Usuários"],
+                "summary": "Criar Usuario",
+                "operationId": "criar_usuario_user__post",
+                "requestBody": {
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UsuarioCreate" } } },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/UsuarioResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
             }
-          }
         },
-        {
-          "name": "Listar dispositivos de um usuário",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/device/1"
-          }
+        "/user/me": {
+            "get": {
+                "tags": ["Usuários"],
+                "summary": "Obter Me",
+                "operationId": "obter_me_user_me_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/UsuarioResponse" } }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            }
         },
-        {
-          "name": "Listar todos os dispositivos",
-          "request": {
-            "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/device/"
-          }
+        "/user/email/{email}": {
+            "get": {
+                "tags": ["Usuários"],
+                "summary": "Obter Usuario Por Email",
+                "operationId": "obter_usuario_por_email_user_email__email__get",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string", "title": "Email" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/UsuarioResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
         },
-        {
-          "name": "Deletar dispositivo",
-          "request": {
-            "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
-            "url": "{{base_url}}/device/{id}"
-          }
+        "/user/{usuario_id}": {
+            "delete": {
+                "tags": ["Usuários"],
+                "summary": "Deletar Usuario",
+                "operationId": "deletar_usuario_user__usuario_id__delete",
+                "parameters": [
+                    {
+                        "name": "usuario_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Usuario Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": { "application/json": { "schema": {} } }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/device/": {
+            "get": {
+                "tags": ["Dispositivos"],
+                "summary": "Listar Todos Dispositivos",
+                "operationId": "listar_todos_dispositivos_device__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": { "$ref": "#/components/schemas/DispositivoResponse" },
+                                    "type": "array",
+                                    "title": "Response Listar Todos Dispositivos Device  Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            },
+            "post": {
+                "tags": ["Dispositivos"],
+                "summary": "Criar Dispositivo",
+                "operationId": "criar_dispositivo_device__post",
+                "requestBody": {
+                    "content": {
+                        "application/json": { "schema": { "$ref": "#/components/schemas/DispositivoCreate" } }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/DispositivoResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            }
+        },
+        "/device/{usuario_id}": {
+            "get": {
+                "tags": ["Dispositivos"],
+                "summary": "Listar Dispositivos",
+                "operationId": "listar_dispositivos_device__usuario_id__get",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "usuario_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Usuario Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": { "application/json": { "schema": {} } }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/device/{dispositivo_id}": {
+            "delete": {
+                "tags": ["Dispositivos"],
+                "summary": "Deletar Dispositivo",
+                "operationId": "deletar_dispositivo_device__dispositivo_id__delete",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "dispositivo_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Dispositivo Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": { "application/json": { "schema": {} } }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/routine/": {
+            "get": {
+                "tags": ["Rotinas"],
+                "summary": "Listar Rotinas",
+                "operationId": "listar_rotinas_routine__get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": { "$ref": "#/components/schemas/RotinaResponse" },
+                                    "type": "array",
+                                    "title": "Response Listar Rotinas Routine  Get"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            },
+            "post": {
+                "tags": ["Rotinas"],
+                "summary": "Criar Rotina",
+                "operationId": "criar_rotina_routine__post",
+                "requestBody": {
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RotinaCreate" } } },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/RotinaResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                },
+                "security": [{ "OAuth2PasswordBearer": [] }]
+            }
+        },
+        "/routine/{rotina_id}": {
+            "get": {
+                "tags": ["Rotinas"],
+                "summary": "Obter Rotina",
+                "operationId": "obter_rotina_routine__rotina_id__get",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "rotina_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Rotina Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/RotinaResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Rotinas"],
+                "summary": "Atualizar Rotina",
+                "operationId": "atualizar_rotina_routine__rotina_id__put",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "rotina_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Rotina Id" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RotinaCreate" } } }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/RotinaResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Rotinas"],
+                "summary": "Deletar Rotina",
+                "operationId": "deletar_rotina_routine__rotina_id__delete",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "rotina_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Rotina Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": { "application/json": { "schema": {} } }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/routine/user/{usuario_id}": {
+            "get": {
+                "tags": ["Rotinas"],
+                "summary": "Listar Rotinas Por Usuario",
+                "operationId": "listar_rotinas_por_usuario_routine_user__usuario_id__get",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "usuario_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Usuario Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/RotinaResponse" },
+                                    "title": "Response Listar Rotinas Por Usuario Routine User  Usuario Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/routine/device/{dispositivo_id}": {
+            "get": {
+                "tags": ["Rotinas"],
+                "summary": "Listar Rotinas Por Dispositivo",
+                "operationId": "listar_rotinas_por_dispositivo_routine_device__dispositivo_id__get",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "dispositivo_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Dispositivo Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": { "$ref": "#/components/schemas/RotinaResponse" },
+                                    "title": "Response Listar Rotinas Por Dispositivo Routine Device  Dispositivo Id  Get"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/routine/{rotina_id}/run": {
+            "post": {
+                "tags": ["Rotinas"],
+                "summary": "Executar Rotina Imediata",
+                "operationId": "executar_rotina_imediata_routine__rotina_id__run_post",
+                "security": [{ "OAuth2PasswordBearer": [] }],
+                "parameters": [
+                    {
+                        "name": "rotina_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "integer", "title": "Rotina Id" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/MensagemResponse" } }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": { "schema": { "$ref": "#/components/schemas/HTTPValidationError" } }
+                        }
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "summary": "Health Check",
+                "operationId": "health_check__get",
+                "responses": {
+                    "200": { "description": "Successful Response", "content": { "application/json": { "schema": {} } } }
+                }
+            }
+        },
+        "/health/db": {
+            "get": {
+                "summary": "Health Check Db",
+                "operationId": "health_check_db_health_db_get",
+                "responses": {
+                    "200": { "description": "Successful Response", "content": { "application/json": { "schema": {} } } }
+                }
+            }
         }
-      ]
     },
-    {
-      "name": "Health Check",
-      "item": [
-        {
-          "name": "API Health Check",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/"
-          }
+    "components": {
+        "schemas": {
+            "DispositivoCreate": {
+                "properties": {
+                    "nome": { "type": "string", "title": "Nome" },
+                    "usuario_id": { "type": "integer", "title": "Usuario Id" }
+                },
+                "type": "object",
+                "required": ["nome", "usuario_id"],
+                "title": "DispositivoCreate"
+            },
+            "DispositivoResponse": {
+                "properties": {
+                    "id": { "type": "integer", "title": "Id" },
+                    "nome": { "type": "string", "title": "Nome" },
+                    "usuario_id": { "type": "integer", "title": "Usuario Id" },
+                    "status": {
+                        "anyOf": [{ "type": "string" }, { "type": "boolean" }, { "type": "null" }],
+                        "title": "Status",
+                        "default": "desligado"
+                    }
+                },
+                "type": "object",
+                "required": ["id", "nome", "usuario_id"],
+                "title": "DispositivoResponse"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": { "$ref": "#/components/schemas/ValidationError" },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "LoginRequest": {
+                "properties": {
+                    "email": { "type": "string", "format": "email", "title": "Email" },
+                    "senha": { "type": "string", "title": "Senha" }
+                },
+                "type": "object",
+                "required": ["email", "senha"],
+                "title": "LoginRequest"
+            },
+            "MensagemResponse": {
+                "properties": {
+                    "mensagem": { "type": "string", "title": "Mensagem" },
+                    "dispositivos_afetados": {
+                        "items": { "type": "string" },
+                        "type": "array",
+                        "title": "Dispositivos Afetados"
+                    }
+                },
+                "type": "object",
+                "required": ["mensagem", "dispositivos_afetados"],
+                "title": "MensagemResponse"
+            },
+            "RotinaCreate": {
+                "properties": {
+                    "nome": { "type": "string", "title": "Nome" },
+                    "dispositivos_ids": {
+                        "items": { "type": "integer" },
+                        "type": "array",
+                        "title": "Dispositivos Ids"
+                    },
+                    "tipo": { "type": "string", "title": "Tipo" },
+                    "horario": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Horario"
+                    }
+                },
+                "type": "object",
+                "required": ["nome", "dispositivos_ids", "tipo"],
+                "title": "RotinaCreate"
+            },
+            "RotinaResponse": {
+                "properties": {
+                    "id": { "type": "integer", "title": "Id" },
+                    "nome": { "type": "string", "title": "Nome" },
+                    "tipo": { "type": "string", "title": "Tipo" },
+                    "horario": {
+                        "anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+                        "title": "Horario"
+                    },
+                    "dispositivos_ids": { "items": { "type": "integer" }, "type": "array", "title": "Dispositivos Ids" }
+                },
+                "type": "object",
+                "required": ["id", "nome", "tipo", "horario", "dispositivos_ids"],
+                "title": "RotinaResponse"
+            },
+            "TokenResponse": {
+                "properties": {
+                    "access_token": { "type": "string", "title": "Access Token" },
+                    "token_type": { "type": "string", "title": "Token Type" }
+                },
+                "type": "object",
+                "required": ["access_token", "token_type"],
+                "title": "TokenResponse"
+            },
+            "UsuarioCreate": {
+                "properties": {
+                    "nome": { "type": "string", "title": "Nome" },
+                    "email": { "type": "string", "format": "email", "title": "Email" },
+                    "senha": { "type": "string", "title": "Senha" }
+                },
+                "type": "object",
+                "required": ["nome", "email", "senha"],
+                "title": "UsuarioCreate"
+            },
+            "UsuarioResponse": {
+                "properties": {
+                    "id": { "type": "integer", "title": "Id" },
+                    "nome": { "type": "string", "title": "Nome" },
+                    "email": { "type": "string", "format": "email", "title": "Email" }
+                },
+                "type": "object",
+                "required": ["id", "nome", "email"],
+                "title": "UsuarioResponse"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": { "type": "string", "title": "Message" },
+                    "type": { "type": "string", "title": "Error Type" }
+                },
+                "type": "object",
+                "required": ["loc", "msg", "type"],
+                "title": "ValidationError"
+            }
         },
-        {
-          "name": "Banco de Dados Health Check",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/health/db"
-          }
+        "securitySchemes": {
+            "OAuth2PasswordBearer": {
+                "type": "oauth2",
+                "flows": { "password": { "scopes": {}, "tokenUrl": "auth/login" } }
+            }
         }
-      ]
     }
-  ]
 }

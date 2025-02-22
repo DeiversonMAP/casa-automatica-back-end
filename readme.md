@@ -1,5 +1,12 @@
 # Comandos importantes
 
+
+### Entre no diretorio casa_automática e rode os seguintes comandos:
+#### Criar ambiente virtual
+```sh
+python -m venv venv
+```
+
 #### Ativar ambiente virtual:
 ```sh 
 venv\Scripts\activate
