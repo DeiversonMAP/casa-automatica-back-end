@@ -110,13 +110,3 @@ CREATE TABLE IF NOT EXISTS rotina_dispositivos (
 
 
 ---
-
-
-updates de dispositivo
-
-Criação exclusão busca e update de rotinas
-
-Rota de executar rotina imediata
-
-
-Testes
