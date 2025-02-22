@@ -78,7 +78,7 @@ async def atualizar_rotina(
 
 
 # ✅ Listar todas as rotinas de um usuário
-@router.get("/usuario/{usuario_id}", response_model=List[RotinaResponse])
+@router.get("/user/{usuario_id}", response_model=List[RotinaResponse])
 async def listar_rotinas_por_usuario(usuario_id: int, user=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
@@ -103,7 +103,7 @@ async def listar_rotinas_por_usuario(usuario_id: int, user=Depends(get_current_u
 
 
 # ✅ Listar todas as rotinas de um dispositivo
-@router.get("/dispositivo/{dispositivo_id}", response_model=List[RotinaResponse])
+@router.get("/device/{dispositivo_id}", response_model=List[RotinaResponse])
 async def listar_rotinas_por_dispositivo(
     dispositivo_id: int, user=Depends(get_current_user)
 ):
@@ -131,7 +131,7 @@ async def listar_rotinas_por_dispositivo(
 
 
 # ✅ Executar uma rotina imediatamente
-@router.post("/{rotina_id}/executar", response_model=MensagemResponse)
+@router.post("/{rotina_id}/run", response_model=MensagemResponse)
 async def executar_rotina_imediata(rotina_id: int, user=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
