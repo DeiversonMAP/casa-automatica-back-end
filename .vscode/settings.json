@@ -1,0 +1,5 @@
+{
+    "postman.settings.dotenv-detection-notification-visibility": false,
+    "docwriter.style": "Auto-detect",
+    "docwriter.progress.trackFunctions": false
+}

@@ -1,0 +1,150 @@
+{
+  "info": {
+    "name": "Casa Automática API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/login",
+            "body": {
+              "mode": "json",
+              "json": {
+                "email": "user@example.com",
+                "senha": "senha123"
+              }
+            }
+          }
+        },
+        {
+          "name": "Obter usuário logado",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Criar usuário",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/user/",
+            "body": {
+              "mode": "json",
+              "json": {
+                "nome": "Novo Usuário",
+                "email": "novo@email.com",
+                "senha": "senhaSegura"
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar todos os usuários",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/user/"
+          }
+        },
+        {
+          "name": "Obter usuário por e-mail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/user/email?email=usuario@email.com"
+          }
+        },
+        {
+          "name": "Obter usuário logado (/user/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/user/me"
+          }
+        },
+        {
+          "name": "Deletar usuário",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/user/{id}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dispositivos",
+      "item": [
+        {
+          "name": "Criar dispositivo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/device/",
+            "body": {
+              "mode": "json",
+              "json": {
+                "nome": "Lâmpada Inteligente",
+                "usuario_id": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Listar dispositivos de um usuário",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/device/1"
+          }
+        },
+        {
+          "name": "Listar todos os dispositivos",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/device/"
+          }
+        },
+        {
+          "name": "Deletar dispositivo",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": "{{base_url}}/device/{id}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/"
+          }
+        },
+        {
+          "name": "Banco de Dados Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health/db"
+          }
+        }
+      ]
+    }
+  ]
+}
