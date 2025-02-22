@@ -1,0 +1,38 @@
+# Bytecode do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+venv/
+.env
+*.env
+
+# Dependências do projeto
+Pipfile
+Pipfile.lock
+poetry.lock
+
+# Logs e arquivos temporários
+*.log
+logs/
+tmp/
+*.sqlite3
+
+# Arquivos de configuração do banco de dados
+*.db
+*.sql
+migrations/
+
+# Configurações do IDE/Editor
+.vscode/
+.idea/
+*.iml
+
+# Cache do FastAPI/Uvicorn
+*.pid
+*.sock
+
+# Arquivos do Docker
+docker-compose.override.yml
+.envrc
