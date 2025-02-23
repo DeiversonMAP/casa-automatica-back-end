@@ -1,7 +1,7 @@
 # Comandos importantes
 
 
-### Entre no diretorio casa_automática e rode os seguintes comandos:
+### Para iniciar o sistema rode os seguintes comandos:
 #### Criar ambiente virtual
 ```sh
 python -m venv venv
