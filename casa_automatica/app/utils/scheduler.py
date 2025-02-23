@@ -4,11 +4,18 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.database import db
 
+import httpx
+
 
 # ✅ Função para verificar e executar rotinas agendadas
 async def verificar_rotinas_agendadas():
     """Verifica e executa rotinas agendadas."""
-    throw("🕒 Verificando rotinas agendadas (função)...")
+
+    url = "http://127.0.0.1:8000/"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         try:

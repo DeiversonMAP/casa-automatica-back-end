@@ -22,12 +22,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```  
 
-##### Acessar o banco:
 
-```sh
-psql -h gondola.proxy.rlwy.net -U postgres -p 26737 -d railway
-PASSWORD xKEcAOlUNzQbWAGZIAgQkroZOhvxQYkF
-```
 
 
 # 📌 Rotas do Sistema
@@ -65,6 +60,12 @@ PASSWORD xKEcAOlUNzQbWAGZIAgQkroZOhvxQYkF
 
 ----
 ## Banco de Dados
+
+#### Acessar o banco:
+```sh
+psql -h gondola.proxy.rlwy.net -U postgres -p 26737 -d railway
+PASSWORD xKEcAOlUNzQbWAGZIAgQkroZOhvxQYkF
+```
 #### Criação das Tabelas
 ```sql
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS rotinas (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     tipo VARCHAR(50) CHECK (tipo IN ('imediata', 'agendada')) NOT NULL,
+    acao VARCHAR(10) NOT NULL CHECK (acao IN ('ativar', 'desativar')),
     horario TIMESTAMP NULL,
     usuario_id INTEGER NOT NULL,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
@@ -95,8 +97,11 @@ CREATE TABLE IF NOT EXISTS rotina_dispositivos (
     id SERIAL PRIMARY KEY,
     rotina_id INTEGER NOT NULL,
     dispositivo_id INTEGER NOT NULL,
-    acao VARCHAR(50) CHECK (acao IN ('ligar', 'desligar')) NOT NULL,
+    acao VARCHAR(10) NOT NULL,
     FOREIGN KEY (rotina_id) REFERENCES rotinas(id) ON DELETE CASCADE,
     FOREIGN KEY (dispositivo_id) REFERENCES dispositivos(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS tokens_revogados (token TEXT PRIMARY KEY, expira_em TIMESTAMP);
+
 ```

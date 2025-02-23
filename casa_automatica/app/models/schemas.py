@@ -52,6 +52,7 @@ class RotinaCreate(BaseModel):
     nome: str
     dispositivos_ids: List[int]  # IDs dos dispositivos associados à rotina
     tipo: str  # "imediato" ou "agendado"
+    acao: str  # "ativar" ou "desativar"
     horario: Optional[datetime] = None  # Necessário se for "agendado"
     usuario_id: int
 
@@ -61,8 +62,9 @@ class RotinaResponse(BaseModel):
     id: int
     nome: str
     tipo: str
+    acao: str  # "ativar" ou "desativar"
     horario: Optional[datetime]
-    usuario_id: int
+    # usuario_id: int
     # dispositivos_ids: List[int]
 
 

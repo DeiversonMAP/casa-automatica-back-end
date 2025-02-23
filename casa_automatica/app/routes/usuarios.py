@@ -46,7 +46,7 @@ async def obter_me(payload: str = Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         usuario = await connection.fetchrow(
-            "SELECT id, nome, email FROM usuarios WHERE email = $1", payload.sub
+            "SELECT id, nome, email FROM usuarios WHERE email = $1", payload["sub"]
         )
         if not usuario:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")

@@ -16,12 +16,13 @@ async def criar_rotina(rotina: RotinaCreate, payload=Depends(get_current_user)):
             print(f"\n🚀 usuario_id: {payload}")
             nova_rotina = await connection.fetchrow(
                 """
-                INSERT INTO rotinas (nome, tipo, horario, usuario_id)
-                VALUES ($1, $2, $3, $4) RETURNING id, nome, tipo, horario, usuario_id
+                INSERT INTO rotinas (nome, tipo, horario, acao, usuario_id)
+                VALUES ($1, $2, $3, $4 , $5) RETURNING id, nome, tipo, horario, acao, usuario_id
                 """,
                 rotina.nome,
                 rotina.tipo,
                 rotina.horario,
+                rotina.acao,
                 payload["id"],
             )
             # Verifica se há dispositivos na rotina
@@ -29,11 +30,12 @@ async def criar_rotina(rotina: RotinaCreate, payload=Depends(get_current_user)):
                 for dispositivo_id in rotina.dispositivos_ids:
                     await connection.execute(
                         """
-                        INSERT INTO rotina_dispositivos (rotina_id, dispositivo_id)
-                        VALUES ($1, $2)
+                        INSERT INTO rotina_dispositivos (rotina_id, dispositivo_id , acao)
+                        VALUES ($1, $2, $3)
                         """,
                         nova_rotina["id"],
                         dispositivo_id,
+                        rotina.acao,
                     )
 
             return RotinaResponse(**nova_rotina)
@@ -77,12 +79,13 @@ async def atualizar_rotina(
     async with conn.acquire() as connection:
         updated_rotina = await connection.fetchrow(
             """
-            UPDATE rotinas SET nome=$1, tipo=$2, horario=$3
-            WHERE id=$4 AND usuario_id=$5 RETURNING id, nome, tipo, horario, usuario_id
+            UPDATE rotinas SET nome=$1, tipo=$2, horario=$3 , acao=$4
+            WHERE id=$5 AND usuario_id=$6 RETURNING id, nome, tipo, horario, acao, usuario_id
             """,
             rotina.nome,
             rotina.tipo,
             rotina.horario,
+            rotina.acao,
             rotina_id,
             payload["id"],
         )
@@ -92,7 +95,7 @@ async def atualizar_rotina(
 
 
 # ✅ Listar todas as rotinas de um usuário
-@router.get("/payload/{usuario_id}", response_model=List[RotinaResponse])
+@router.get("/user/{usuario_id}", response_model=List[RotinaResponse])
 async def listar_rotinas_por_usuario(
     usuario_id: int, payload=Depends(get_current_user)
 ):
@@ -100,7 +103,7 @@ async def listar_rotinas_por_usuario(
     async with conn.acquire() as connection:
         rotinas = await connection.fetch(
             """
-            SELECT r.id, r.nome, r.tipo, r.horario, 
+            SELECT r.id, r.nome, r.tipo, r.horario, r.acao,
                    ARRAY_AGG(rd.dispositivo_id) AS dispositivos_ids
             FROM rotinas r
             JOIN rotina_dispositivos rd ON r.id = rd.rotina_id
@@ -127,7 +130,7 @@ async def listar_rotinas_por_dispositivo(
     async with conn.acquire() as connection:
         rotinas = await connection.fetch(
             """
-            SELECT r.id, r.nome, r.tipo, r.horario, 
+            SELECT r.id, r.nome, r.tipo, r.horario, r.acao,
                    ARRAY_AGG(rd.dispositivo_id) AS dispositivos_ids
             FROM rotinas r
             JOIN rotina_dispositivos rd ON r.id = rd.rotina_id
