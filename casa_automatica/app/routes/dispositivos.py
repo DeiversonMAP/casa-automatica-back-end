@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.post("/", response_model=DispositivoResponse)
 async def criar_dispositivo(
-    dispositivo: DispositivoCreate, user=Depends(get_current_user)
+    dispositivo: DispositivoCreate, payload=Depends(get_current_user)
 ):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
@@ -49,7 +49,7 @@ async def criar_dispositivo(
 
 # ✅ Listar dispositivos de um usuário
 @router.get("/{usuario_id}")
-async def listar_dispositivos(usuario_id: int, user=Depends(get_current_user)):
+async def listar_dispositivos(usuario_id: int, payload=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         dispositivos = await connection.fetch(
@@ -65,7 +65,7 @@ async def listar_dispositivos(usuario_id: int, user=Depends(get_current_user)):
 
 
 @router.get("/", response_model=list[DispositivoResponse])
-async def listar_todos_dispositivos(user=Depends(get_current_user)):
+async def listar_todos_dispositivos(payload=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         dispositivos = await connection.fetch(
@@ -77,7 +77,7 @@ async def listar_todos_dispositivos(user=Depends(get_current_user)):
 
 
 @router.delete("/{dispositivo_id}")
-async def deletar_dispositivo(dispositivo_id: int, user=Depends(get_current_user)):
+async def deletar_dispositivo(dispositivo_id: int, payload=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         dispositivo = await connection.fetchrow(

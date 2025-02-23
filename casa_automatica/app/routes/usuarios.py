@@ -42,11 +42,11 @@ async def criar_usuario(usuario: UsuarioCreate):
 
 # ✅ Obter dados do usuário autenticado
 @router.get("/me", response_model=UsuarioResponse)
-async def obter_me(usuario_email: str = Depends(get_current_user)):
+async def obter_me(payload: str = Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         usuario = await connection.fetchrow(
-            "SELECT id, nome, email FROM usuarios WHERE email = $1", usuario_email
+            "SELECT id, nome, email FROM usuarios WHERE email = $1", payload.sub
         )
         if not usuario:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -56,7 +56,7 @@ async def obter_me(usuario_email: str = Depends(get_current_user)):
 
 # ✅ Listar todos os usuários (Protegido)
 @router.get("/", response_model=list[UsuarioResponse])
-async def listar_usuarios(usuario_email: str = Depends(get_current_user)):
+async def listar_usuarios(payload: str = Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         usuarios = await connection.fetch("SELECT id, nome, email FROM usuarios")

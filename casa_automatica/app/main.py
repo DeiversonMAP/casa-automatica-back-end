@@ -1,12 +1,22 @@
 from fastapi import FastAPI, Depends
 from app.database import db
-from app.routes import usuarios, dispositivos, rotinas, auth  # Importamos os roteadores
+from app.routes import usuarios, dispositivos, rotinas, auth
+from app.utils.scheduler import iniciar_scheduler
 
 app = FastAPI()
 
-# Conectar ao banco ao iniciar a API
-app.add_event_handler("startup", db.connect)
-app.add_event_handler("shutdown", db.disconnect)
+
+# Conectar ao banco e iniciar o scheduler ao iniciar a API
+@app.on_event("startup")
+async def startup():
+    await db.connect()
+    iniciar_scheduler()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await db.disconnect()
+
 
 # ✅ Registrar os roteadores
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])

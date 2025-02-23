@@ -58,7 +58,6 @@ class Database:
                         id SERIAL PRIMARY KEY,
                         rotina_id INTEGER NOT NULL,
                         dispositivo_id INTEGER NOT NULL,
-                        acao VARCHAR(50) CHECK (acao IN ('ligar', 'desligar')) NOT NULL,
                         FOREIGN KEY (rotina_id) REFERENCES rotinas(id) ON DELETE CASCADE,
                         FOREIGN KEY (dispositivo_id) REFERENCES dispositivos(id) ON DELETE CASCADE
                     );

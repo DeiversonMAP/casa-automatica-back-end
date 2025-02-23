@@ -53,6 +53,7 @@ class RotinaCreate(BaseModel):
     dispositivos_ids: List[int]  # IDs dos dispositivos associados à rotina
     tipo: str  # "imediato" ou "agendado"
     horario: Optional[datetime] = None  # Necessário se for "agendado"
+    usuario_id: int
 
 
 # ✅ Schema para exibir uma rotina
@@ -61,7 +62,8 @@ class RotinaResponse(BaseModel):
     nome: str
     tipo: str
     horario: Optional[datetime]
-    dispositivos_ids: List[int]
+    usuario_id: int
+    # dispositivos_ids: List[int]
 
 
 # ✅ Schema para mensagens de resposta genéricas

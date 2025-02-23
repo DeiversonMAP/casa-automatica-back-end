@@ -62,3 +62,41 @@ PASSWORD xKEcAOlUNzQbWAGZIAgQkroZOhvxQYkF
 ## 🩺 Health Check
 - **GET** `/` → Verifica se a API está rodando.  
 - **GET** `/health/db` → Verifica a conexão com o banco de dados.  
+
+----
+## Banco de Dados
+#### Criação das Tabelas
+```sql
+CREATE TABLE IF NOT EXISTS usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha_hash TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS dispositivos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    status BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS rotinas (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) CHECK (tipo IN ('imediata', 'agendada')) NOT NULL,
+    horario TIMESTAMP NULL,
+    usuario_id INTEGER NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS rotina_dispositivos (
+    id SERIAL PRIMARY KEY,
+    rotina_id INTEGER NOT NULL,
+    dispositivo_id INTEGER NOT NULL,
+    acao VARCHAR(50) CHECK (acao IN ('ligar', 'desligar')) NOT NULL,
+    FOREIGN KEY (rotina_id) REFERENCES rotinas(id) ON DELETE CASCADE,
+    FOREIGN KEY (dispositivo_id) REFERENCES dispositivos(id) ON DELETE CASCADE
+);
+```
