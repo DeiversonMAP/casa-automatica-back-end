@@ -2,20 +2,18 @@ from fastapi import FastAPI, Depends
 from app.database import db
 from app.routes import usuarios, dispositivos, rotinas, auth
 from app.utils.scheduler import iniciar_scheduler
-
-app = FastAPI()
+from contextlib import asynccontextmanager
 
 
 # Conectar ao banco e iniciar o scheduler ao iniciar a API
-@app.on_event("startup")
-async def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     await db.connect()
-    iniciar_scheduler()
-
-
-@app.on_event("shutdown")
-async def shutdown():
+    yield
     await db.disconnect()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 # ✅ Registrar os roteadores

@@ -17,12 +17,19 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+#### Rodar os testes de unidade:
+
+```sh
+pytest tests/
+
+```
+
 #### Rodar o python:
 ```sh 
-uvicorn app.main:app --reload
+uvicorn main:app --reload
 ```  
 
-
+---
 
 
 # 📌 Rotas do Sistema
@@ -105,3 +112,88 @@ CREATE TABLE IF NOT EXISTS rotina_dispositivos (
 CREATE TABLE IF NOT EXISTS tokens_revogados (token TEXT PRIMARY KEY, expira_em TIMESTAMP);
 
 ```
+
+
+---
+## Framework Web (API)
+Para criar a API que vai gerenciar os dispositivos escolhemos:
+#### ✅ FastAPI
+- 🚀 Muito rápido e otimizado para alto desempenho.
+- 🏗️ Baseado em Pydantic e Type Hints, garantindo segurança de tipos.
+- 📄 Swagger automático (gera documentação interativa automaticamente).
+- 🔥 Ideal para APIs modernas e comunicação com IoT.
+---
+## Autenticação e Segurança
+O sistema precisa garantir que apenas usuários autorizados possam acessar e modificar dispositivos. Algumas opções:
+
+#### ✅ Autenticação JWT (Token baseado em JSON Web Tokens)
+
+- Ideal para sistemas distribuídos e APIs seguras.
+- FastAPI tem suporte nativo via OAuth2 + JWT.
+---
+
+
+## Escolha do Banco de Dados
+Como o sistema lida com dispositivos, usuários e automações, é importante escolher um banco adequado.
+
+#### ✅ PostgreSQL (Banco Relacional - Melhor escolha se precisar de estrutura sólida)
+
+- Ideal para dados estruturados (usuários, dispositivos, logs de eventos).
+- Suporte a JSON e consultas avançadas.
+- Escalável e seguro.
+
+#### ✅ MongoDB (Banco NoSQL - Melhor para logs e dados flexíveis)
+
+- Ideal para dados sem estrutura fixa (logs de sensores, eventos de dispositivos).
+- Permite armazenar estados e históricos de maneira fácil.
+- Recomendado para sistemas altamente dinâmicos.
+---
+## Testes e Monitoramento
+Para garantir que o sistema funcione corretamente:
+
+ ✅ Testes Automatizados (Pytest)
+
+### Testes de Unidade:
+Os testes verificam se as principais funcionalidades do sistema de automação residencial estão funcionando corretamente.
+
+Tudo começa com `test_criar_usuario`, que tenta encontrar um usuário pelo e-mail. Se ele não existir (retorno `404`), o teste cria um novo usuário. Em seguida, `test_login` verifica se esse usuário consegue fazer login com as credenciais criadas, garantindo que o sistema retorna um token JWT válido. Esse token será essencial para as próximas requisições.
+
+Com o usuário logado, `test_criar_dispositivo` entra em ação. Ele busca o ID do usuário e cadastra um dispositivo associado a ele, garantindo que a relação entre ambos esteja correta.
+
+Depois, vem `test_criar_rotina`, que é um passo além na automação. Esse teste certifica que o usuário pode criar uma rotina, vinculando-a ao dispositivo registrado anteriormente. Antes de tudo, ele também verifica se todas as variáveis globais (usuário, dispositivo e token) foram corretamente definidas.
+
+Por fim, `test_excluir_usuario` finaliza o processo garantindo que o usuário pode ser excluído junto com seus dispositivos. Ele busca o usuário pelo e-mail, obtém seu ID e envia uma requisição de remoção. Se tudo correr bem, o sistema retorna uma confirmação de que tanto o usuário quanto os dispositivos foram apagados.
+
+Cada teste foi pensado para garantir que o fluxo do sistema aconteça sem falhas, desde o cadastro até a exclusão dos dados. Isso assegura que tudo está rodando como deveria e evita problemas futuros.
+
+### Teste de Integração
+Os testes de integração verificam a comunicação entre diferentes partes do sistema.
+
+#### Teste: Ativar uma Rotina e Atualizar Status dos Dispositivos
+
+**Objetivo:** Testar se, ao ativar uma rotina, os dispositivos associados são atualizados corretamente.
+
+**Cenário:**
+
+1. Criar uma rotina "Manhã" que ativa um dispositivo "Lâmpada".
+2. Enviar uma requisição POST /rotinas/1/ativar.
+3. erificar se a lâmpada teve o status atualizado para TRUE no banco de dados.
+4. O servidor deve retornar 200 OK e uma confirmação da ação.
+
+### Teste de Sistema
+
+Os testes de sistema verificam o comportamento completo do sistema sob diferentes cenários.
+
+#### Teste: Execução Completa de uma Rotina Agendada
+
+**Objetivo:** Testar se uma rotina agendada é corretamente executada no horário definido.
+
+**Cenário:**
+
+1. Criar uma rotina "Noite" para desligar todos os dispositivos às 22h.
+2. Associar dispositivos à rotina com ações de "desativar".
+3. Aguardar a execução do sistema até o horário programado.
+4. Verificar se os dispositivos foram desligados corretamente.
+5. O sistema deve registrar a execução da rotina.
+
+---
