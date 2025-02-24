@@ -10,6 +10,8 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
     yield
+
+    
     await db.disconnect()
 
 
