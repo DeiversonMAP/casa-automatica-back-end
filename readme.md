@@ -196,4 +196,5 @@ Os testes de sistema verificam o comportamento completo do sistema sob diferente
 4. Verificar se os dispositivos foram desligados corretamente.
 5. O sistema deve registrar a execução da rotina.
 
+
 ---
