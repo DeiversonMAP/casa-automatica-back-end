@@ -13,7 +13,6 @@ async def criar_rotina(rotina: RotinaCreate, payload=Depends(get_current_user)):
     conn = await db.get_connection()
     async with conn.acquire() as connection:
         try:
-            print(f"\n🚀 usuario_id: {payload}")
             nova_rotina = await connection.fetchrow(
                 """
                 INSERT INTO rotinas (nome, tipo, horario, acao, usuario_id)
