@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import db
 from app.routes import usuarios, dispositivos, rotinas, auth
 from app.utils.scheduler import iniciar_scheduler
@@ -10,13 +12,21 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
     yield
-
-    
     await db.disconnect()
 
 
 app = FastAPI(lifespan=lifespan)
 
+# Configuração do CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*"
+    ],  # Altere para ["http://127.0.0.1:5500"] se quiser mais segurança
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permite todos os headers
+)
 
 # ✅ Registrar os roteadores
 app.include_router(auth.router, prefix="/auth", tags=["Autenticação"])
