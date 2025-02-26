@@ -177,7 +177,7 @@ Os testes de integração verificam a comunicação entre diferentes partes do s
 
 1. Criar uma rotina "Manhã" que ativa um dispositivo "Lâmpada".
 2. Enviar uma requisição POST /rotinas/1/ativar.
-3. erificar se a lâmpada teve o status atualizado para TRUE no banco de dados.
+3. Verificar se a lâmpada teve o status atualizado para TRUE no banco de dados.
 4. O servidor deve retornar 200 OK e uma confirmação da ação.
 
 ### Teste de Sistema
